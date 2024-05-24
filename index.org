@@ -1,0 +1,14 @@
+* Week 1
+** Day 1
+SCHEDULED: <2024-05-24 Fri>
+*** [[file:tags/dp/433_B.cpp]]
+Kuriyama Mirai's Stones
+/For every question you should give the correct answer, or Kuriyama Mirai will say "fuyukai desu" and then become unhappy./
+Stay positive and Enjoy the process :)
+**** Prefix Sum
+*** [[file:tags/dp/580_A.cpp]]
+Kefa and First Steps
+**** Longest Non-decreasing Subsegment
+*** [[file:tags/brute_force/550_A.cpp]]
+Two Substrings
+Just consider all possible cases. And deal each of them.
