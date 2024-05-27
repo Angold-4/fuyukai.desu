@@ -68,39 +68,32 @@ void debug_out(vector<string> args, int idx, int LINE_NUM, Head H, Tail... T) {
 	debug_out(args, idx + 1, LINE_NUM, T...);
 }
 
-#ifdef DEBUG
 #define debug(...) debug_out(vec_splitter(#__VA_ARGS__), 0, __LINE__, __VA_ARGS__)
-#else
-#define debug(...) 42
-#endif
+#define ll long long
 
 int main() {
   int n; cin >> n;
-  vector<long long> vll(n);
-  for (int i = 0; i < n; i++) cin >> vll[i];
-  vector<long long> prefix1(n+1); prefix1[0] = 0;
-  prefix1[1] = vll[0];
-  for (int i = 1; i < n; i++)
-    prefix1[i+1] = vll[i] + prefix1[i];
-
-  sort(vll.begin(), vll.end());
-  vector<long long> prefix2(n+1); prefix2[0] = 0;
-  prefix2[1] = vll[0];
-  for (int i = 1; i < n; i++)
-    prefix2[i+1] = vll[i] + prefix2[i];
-
-  int cases; cin >> cases;
-  while (cases--) {
-    int m, l, r; cin >> m >> l >> r;
-    switch (m) {
-    case 1:
-      cout << prefix1[r] - prefix1[l-1] << '\n';
-      break;
-    case 2:
-      cout << prefix2[r] - prefix2[l-1] << '\n';
-      break;
-    default:
-      break;
-    }
+  ll tmp;
+  vector<ll> prefix(n+1);
+  for (int i = 0; i < n; i++) {
+    cin >> tmp;
+    prefix[i+1] = prefix[i] + tmp;
   }
+
+  if (prefix[n] % 3) {
+    cout << 0 << endl;
+    return 0;
+  }
+
+  ll target = prefix[n] / 3, sum = 0;
+  ll ret = 0, tf = 0;
+  for (int i = 1; i < n; i++) { // only till n
+    // a valid solution, count all prev one, and divide here as two
+    if (prefix[i] == 2*target) ret+=tf;
+    // DP mindset
+    // tf: The state tf represents the number of ways to achieve the first target sum up to the current index.
+    if (prefix[i] == target) tf++;
+  }
+
+  cout << ret << endl;
 }

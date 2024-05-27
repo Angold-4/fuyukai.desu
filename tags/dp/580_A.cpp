@@ -27,13 +27,13 @@ std::ostream &operator<<(std::ostream &os, const std::pair<T1,T2> &p){
   return os;
 }
 
-template<typename C, 
+template<typename C,
          typename T = std::decay<decltype(*begin(std::declval<C>()))>,
          typename std::enable_if<!std::is_same<C, std::string>::value>::type* = nullptr
          >
 std::ostream &operator<<(std::ostream &os, const C &container){
   bool first = true;
-  std::stringstream ss; 
+  std::stringstream ss;
   ss << '[';
   for(const auto &x : container){
     if (!first){
@@ -58,8 +58,8 @@ vector<string> vec_splitter(string s) {
 
 void debug_out(
 vector<string> __attribute__ ((unused)) args,
-__attribute__ ((unused)) int idx, 
-__attribute__ ((unused)) int LINE_NUM) { cerr << endl; } 
+__attribute__ ((unused)) int idx,
+__attribute__ ((unused)) int LINE_NUM) { cerr << endl; }
 template <typename Head, typename... Tail>
 void debug_out(vector<string> args, int idx, int LINE_NUM, Head H, Tail... T) {
 	if(idx > 0) cerr << ", "; else cerr << "Line(" << LINE_NUM << ") ";
