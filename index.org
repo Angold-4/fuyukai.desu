@@ -12,3 +12,16 @@ Kefa and First Steps
 *** [[file:tags/brute_force/550_A.cpp]]
 Two Substrings
 Just consider all possible cases. And deal each of them.
+
+** Day 2
+SCHEDULED: <2024-05-27 Mon>
+*** [[file:tags/prefix_sum/466_C.cpp]]
+Number of Ways
+Reconnaissance: Think 5 mins before start writing solution. (3S 2S 1S)
+**** Prefix Sum
+Prefix sum => DP mindset
+
+* Week 2
+** Day 1
+SCHEDULED: <2024-05-28 Tue>
+*** [[file:tags/dp/894_A.cpp]]
