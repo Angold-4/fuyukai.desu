@@ -25,3 +25,6 @@ Prefix sum => DP mindset
 ** Day 1
 SCHEDULED: <2024-05-28 Tue>
 *** [[file:tags/dp/894_A.cpp]]
+** Day 2
+SCHEDULED: <2024-05-29 Wed>
+*** [[file:tags/dp/1862_A.cpp]]
