@@ -28,3 +28,6 @@ SCHEDULED: <2024-05-28 Tue>
 ** Day 2
 SCHEDULED: <2024-05-29 Wed>
 *** [[file:tags/dp/1862_A.cpp]]
+** Day 3
+SCHEDULED: <2024-05-30 Thu>
+*** Palindrome: [[file:topics/palindrome.org]]

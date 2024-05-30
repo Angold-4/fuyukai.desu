@@ -1,0 +1,181 @@
+# Palindrome
+# A string is palindromic if it reads the same forward and backward.
+# By Angold WANG
+# May 2024
+
+* 1. Valid Palindrome
+Check whether a string or a number is palindrome.
+**** Two Pointers
+#+BEGIN_SRC cpp
+  while (l < r) {
+    if (s[l] != s[j]) return false;
+    l++; r--;
+   }
+  return true;
+#+END_SRC
+** Leetcode 125.  Valid Palindrome
+** Leetcode 9.    Palindrome Number
+*** Faster Runtime
+Reverse the string, see whether it is equal to original (Use more memory)
+** Leetcode 680.  Valid Palindrome II
+*** Intersting Alternative
+DP-like mindset in order to solve this question (state change)
+
+
+
+* 2. Longest Palindromic
+Return the longest palindromic substring(or subsequence) in given string.
+/A Very Classic DP Question/
+
+** Leetcode 5.    Longest Palindromic Substring
+*** 1. Brute Force
+**** Time Complexity: O(N^3)
+***** Loop over each substring: O(N^2)
+***** Valid helper: O(N)
+Note that this time complexity is in the worst case and has a significant constant divisor that is dropped by big O.
+Due to the optimizations of checking the longer length substrings first and exiting the palindrome check early
+if we determine that a substring cannot be a palindrome, the practical runtime of this algorithm is not too bad.
+**** Space Complexity: O(1)
+#+BEGIN_SRC cpp
+  class Solution {
+  public:
+    string longestPalindrome(string s) {
+      for (int length = s.size(); length > 0; length--) {
+	for (int start = 0; start <= s.size()-length; start++) {
+	  if (helper(s, start, start+length-1)) {
+	    return s.substr(start, length);
+	  }
+	}
+      }
+      return "";
+    }
+  private:
+    bool helper(string s, int i, int j) {
+      while (i < j) {
+	if (s[i] != s[j]) return false;
+	i++; j--;
+      }
+      return true;
+    }
+  };
+#+END_SRC
+
+
+*** 2. Dynamic Programming
+**** Time Complexity: O(N^2)
+**** Space Complxity: O(N^2)
+**** DP Mindset: Trade Space for Time
+In [[*1. Brute Force][1. Brute Force]], we've checked whether the ~substr(i, j)~ of string ~s~ is palindromic many times.
+That is not great since it is a O(N) task, and some substr were overlapped, that is like:
+Let's say that we knew the substring with inclusive bounds ~i~, ~j~ was a palindrome. If ~s[i-1] == s[j+1]~
+then we know the substring with inclusive bounds ~i-1~, ~j+1~ must also be a palindrome, and this check can be done in constant time if we met them and store the result before.
+
+After make some changes the brute force solution by managing a O(N^2) dp table, we effectively avoid check whether the same substr is palindromic repeatly.
+Because we are starting with the shortest substrings and iterating toward the longest substrings,
+every time we find a new palindrome, it must be the longest one we have seen so far. We can use this fact to keep track of the answer on the fly.
+#+BEGIN_SRC cpp
+  class Solution {
+  public:
+    string longestPalindrome(string s) {
+      int maxLength = 1;
+      int maxStart = 0;
+      // size of 0
+      if (s.size() == 0) return "";
+
+      vector<vector<bool>> dp(s.size(), vector<bool>(s.size(), false));
+      // size of 1
+      for (int i = 0; i < s.size(); i++)
+	dp[i][i] = true;
+
+      // size of 2
+      for (int i = 0; i < s.size()-1; i++) {
+	if (s[i] == s[i+1]) {
+	  dp[i][i+1] = true;
+	  maxStart = i;
+	  maxLength = 2;
+	}
+      }
+
+      // size > 3 (start from small)
+      for (int length = 3; length <= s.size(); length++) {
+	for (int start = 0; start <= s.size()-length; start++) {
+	  if (helper(s, start, start+length-1, dp)) {
+	    maxStart = start;
+	    maxLength = length;
+	  }
+	}
+      }
+
+      return s.substr(maxStart, maxLength);
+    }
+  private:
+    bool helper(string& s, int i, int j, vector<vector<bool>>& dp) {
+      int start = i, end = j;
+      while (i < j) {
+	if (s[i] != s[j]) return false;
+	else if (s[i] == s[j] && dp[i+1][j-1]) {
+	  dp[start][end] = true;
+	  return true;
+	}
+	i++; j--;
+      }
+      return false;
+    }
+  };
+#+END_SRC
+
+**** DP Mindset: Iterate through all Sub-problems
+Sometimes, you can think about DP as a "Smart Brute-force" that can remember all previous results to avoid compute the same problem twice.
+In fact, to find an optimal solution, sometimes we have to consider all the possible cases.
+DP mindset finds a smart way to effectively define a route to "reach" to the final big problems so that you only need to calculate each cases once.
+Usually, this route start from a small, sub-problem all the way till the final problem, and all the large problems will use the results of the smaller problems.
+The most crucial part is how to find this "path", and how to define all the sub-problems.
+***** 1. Define the Subproblem
+***** 2. State Transition (Solving Bigger Problems with Subproblems)
+To do this, we often need to find the relationship between the results of sub-problem and and how can it help us to solve larger problems. 
+For example, in our case here, if we knew the substring with inclusive bounds ~i~, ~j~ was a palindrome, then if ~s[i-1] == s[j+1]~, we can tell the larger substring
+with inclusive bounds ~i-1~, ~j+1~ must also be a palindrome. And that can help us solve the bigger question all the way till the full string.
+
+So, with this mindset, we can get rid of that helper function, since we start from the smaller, sub-questions(sub-strings with smaller length).
+since all sub-cases are considered, for larger substring with inclusive bounds ~i~, ~j~, it only depends on:
+***** 1. Whether ~s[i] == s[j]~.
+***** 2. Whether ~dp[i+1][j-1]~ is a palindrome substring.
+In the helper function, we do not need to check all the substrings, it just depends on a single sub-problem. Thus we can reduce the solution as follows:
+
+#+BEGIN_SRC cpp
+  class Solution {
+  public:
+    string longestPalindrome(string s) {
+      int maxLength = 1;
+      int maxStart = 0;
+      // size of 0
+      if (s.size() == 0) return "";
+
+      vector<vector<bool>> dp(s.size(), vector<bool>(s.size(), false));
+      // size of 1
+      for (int i = 0; i < s.size(); i++)
+	dp[i][i] = true;
+
+      // size of 2
+      for (int i = 0; i < s.size()-1; i++) {
+	if (s[i] == s[i+1]) {
+	  dp[i][i+1] = true;
+	  maxStart = i;
+	  maxLength = 2;
+	}
+      }
+
+      // size > 3 (start from small)
+      for (int length = 3; length <= s.size(); length++) {
+	for (int start = 0; start <= s.size()-length; start++) {
+	  if (s[start] == s[start+length-1] && dp[start+1][start+length-2]) {
+	    dp[start][start+length-1] = true;
+	    maxStart = start;
+	    maxLength = length;
+	  }
+	}
+      }
+      return s.substr(maxStart, maxLength);
+    }
+  };
+#+END_SRC
